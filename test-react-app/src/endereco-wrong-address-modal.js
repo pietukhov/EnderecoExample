@@ -4,6 +4,7 @@ import EnderecoRadioButton from './endereco-radio'
 export default function EnderecoWrongAddressModal({OpenStatus, UpdateOpenStatus, Data, Handler}) {
   const [checkStatus, setCheckStatus] = useState("0");
   const onCheck = (value) => {
+    console.log(value);
     setCheckStatus(value)
   }
 
@@ -60,9 +61,12 @@ export default function EnderecoWrongAddressModal({OpenStatus, UpdateOpenStatus,
                 checkStatus={checkStatus}
               />
             </ul>
+          {
+          checkStatus != "0" &&
           <div className="endereco-modal__warning" endereco-show-if-origin="">
             Wrong addresses can lead to delivery problems and cause additional costs.
           </div>
+          }
         </div>
         <div className="endereco-modal__footer">
           <button className="btn btn-primary btn-lg" endereco-use-selection="" endereco-disabled-until-confirmed="" onClick={onApply}>

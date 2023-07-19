@@ -10,7 +10,7 @@ const KEY_CODES = {
 }
 
 function useAutoComplete({ delay = 500, source, onChange, onInput }) {
-    
+
     const [myTimeout, setMyTimeOut] = useState(setTimeout(() => { }, 0))
     const listRef = useRef()
     const [suggestions, setSuggestions] = useState([])
@@ -62,7 +62,7 @@ function useAutoComplete({ delay = 500, source, onChange, onInput }) {
         //     setBusy(true)
         //     clearSuggestionsWithData([]);
         //     setPreSuggestions([]);
-            
+
         //     delayInvoke(() => {
         //         getSuggestions(searchTerm)
         //         setBusy(false)
@@ -142,24 +142,27 @@ function useAutoComplete({ delay = 500, source, onChange, onInput }) {
     }
 }
 
-export default function PostCodeAutoComplete({runAutoComplete, setDataSuggestions, onDataChange, onDataInput, countryStates, autoUpdate, updateStatus}) {
-    const { bindInput, bindOptions,  bindOption, isBusy, suggestions, selectedIndex, updateInput, closeList} = useAutoComplete({
+export default function PostCodeAutoComplete({ runAutoComplete, setDataSuggestions, onDataChange, onDataInput, countryStates, 
+    autoUpdate, updateStatus, focused, setFocused }) {
+
+    const { bindInput, bindOptions, bindOption, isBusy, suggestions, selectedIndex, updateInput, closeList } = useAutoComplete({
         onInput: value => onDataInput(value),
         onChange: value => onDataChange(value),
         source: async (search) => {
-          try {
-               const res = await runAutoComplete(search);
-               const data = await res.predictions
-               setDataSuggestions({
-                postCode: data
-               })
-               return data;
-          } catch (e) {
-              console.log(e)
+            try {
+                const res = await runAutoComplete(search);
+                const data = await res.predictions
+                setDataSuggestions({
+                    postCode: data
+                })
+                return data;
+            } catch (e) {
+                console.log(e)
                 return []
-          }
-     }
+            }
+        }
     })
+
 
     useEffect(() => {
         if (autoUpdate['postCode'].length > 0) {
@@ -172,41 +175,49 @@ export default function PostCodeAutoComplete({runAutoComplete, setDataSuggestion
         }
     })
 
+
     return (<div>
-            <label className="form-label" htmlFor="postCode">{"Postcode*"}</label>
-                        <input
-                                placeholder='Enter postal code...'
-                                className="form-control"
-                                {...bindInput}
-                            />
-                        <ul {...bindOptions} className="w-[300px] scroll-smooth absolute max-h-[260px] overflow-x-hidden overflow-y-auto" >
-                            {
-                                suggestions.map((suggestion, index) => (
-                                    <li
-                                        className={`flex items-center h-[40px] p-1` + (selectedIndex === index && "bg-slate-300")}
-                                        key={index}
-                                        {...bindOption}
-                                    >
-                                        <div className="flex items-center space-x-1">
-                                            <a href="#">
-                                                <span className="highlight">
-                                                    {suggestion.postCode.substring(0, bindInput.value.length)}
-                                                </span>
-                                                <span className="normal">
-                                                    {suggestion.postCode.substring(bindInput.value.length, suggestion.postCode.length)}
-                                                </span>
-                                                <span className="normal">
-                                                    , {suggestion.cityName}
-                                                </span>
-                                                <span>
-                                                    , {countryStates.find(state => state.shortCode === suggestion.subdivisionCode).name}
-                                                </span>
-                                            </a>
-                                        </div>
-                                    </li>
-                                ))
-                            }
-                        </ul>
-        </div>
-        )
+        <label className="form-label" htmlFor="postCode">{"Postcode*"}</label>
+
+            <input
+                placeholder='Enter postal code...'
+                className="form-control"
+                onFocus={() => setFocused('postcode')}
+
+                {...bindInput}
+            />
+            {
+                focused == 'postcode' && <ul {...bindOptions} className="w-[300px] scroll-smooth absolute max-h-[260px] overflow-x-hidden overflow-y-auto" >
+                    {
+                        suggestions.map((suggestion, index) => (
+                            <li
+                                className={`flex items-center h-[40px] p-1` + (selectedIndex === index && "bg-slate-300")}
+                                key={index}
+                                {...bindOption}
+                            >
+                                <div className="flex items-center space-x-1">
+                                    <a href="#">
+                                        <span className="highlight">
+                                            {suggestion.postCode.substring(0, bindInput.value.length)}
+                                        </span>
+                                        <span className="normal">
+                                            {suggestion.postCode.substring(bindInput.value.length, suggestion.postCode.length)}
+                                        </span>
+                                        <span className="normal">
+                                            , {suggestion.cityName}
+                                        </span>
+                                        <span>
+                                            , {countryStates.find(state => state.shortCode === suggestion.subdivisionCode)?.name}
+                                        </span>
+                                    </a>
+                                </div>
+                            </li>
+                        ))
+                    }
+                </ul>
+            }
+
+
+    </div>
+    )
 }

@@ -50,6 +50,7 @@ function App() {
     salutation: false
   });
 
+  // you can refer key for each input field on this map
   const [infoStatus, setInfoStatus] = useState({
     salutation: -1,
     firstName: -1,
@@ -80,15 +81,16 @@ function App() {
   const [dialogStatus, setDialogStatus] = useState(false);
   const [dialogType, setDialogType] = useState("wrong");
   const [dialogData, setDialogData] = useState({});
+  const [focused, setFocused] = useState('');
 
   const countryData = [
-      {
-        countryId: "84702aaa0e434716a805a4e35bdf0bb6",
-        countryCode: "DE",
-        language: "de",
-        countryName: "Germany"
-      }
-    ]
+    {
+      countryId: "84702aaa0e434716a805a4e35bdf0bb6",
+      countryCode: "DE",
+      language: "de",
+      countryName: "Germany"
+    }
+  ]
 
   useEffect(() => {
     const countryId = countryData[0].countryId;
@@ -98,21 +100,21 @@ function App() {
   }, [loadCountryStates])
 
   const blur = useCallback((event) => {
-    switch(event.target.id) {
-    case "email":
-      emailCheck(event.target.id, event.target.value);
-      break;
-    case "password":
-      passwordCheck(event.target.id, event.target.value);
-      break;
-    case 'firstName':
-      firstNameCheck(event.target.id, event.target.value);
-      break;
-    case 'lastName':
-      lastNameCheck(event.target.id, event.target.value);
-      break;
-    default:
-      break;
+    switch (event.target.id) {
+      case "email":
+        emailCheck(event.target.id, event.target.value);
+        break;
+      case "password":
+        passwordCheck(event.target.id, event.target.value);
+        break;
+      case 'firstName':
+        firstNameCheck(event.target.id, event.target.value);
+        break;
+      case 'lastName':
+        lastNameCheck(event.target.id, event.target.value);
+        break;
+      default:
+        break;
     }
   })
 
@@ -122,12 +124,12 @@ function App() {
       [event.target.id]: event.target.value
     })
 
-    switch(event.target.id) {
-        case 'salutation':
-          salutationCheck(event.target.id, event.target.value);
-          break;
-        default:
-          break;
+    switch (event.target.id) {
+      case 'salutation':
+        salutationCheck(event.target.id, event.target.value);
+        break;
+      default:
+        break;
     }
   })
 
@@ -135,6 +137,11 @@ function App() {
   }
 
   const salutationCheck = (key, value) => {
+    // max
+    if (value !== "x") {
+      return
+    }
+    //
     if (information['firstName'].length === 0) {
       setInfoStatus({
         ...infoStatus,
@@ -160,6 +167,11 @@ function App() {
   }
 
   const firstNameCheck = (key, value) => {
+    // max
+    if (information['salutation'] !== "x") {
+      return;
+    }
+    //
     if (information['salutation'].length === 0) {
       setInfoStatus({
         ...infoStatus,
@@ -192,8 +204,13 @@ function App() {
 
     nameCheck(params);
   }
-
+  
   const lastNameCheck = (key, value) => {
+    // max
+    if (information['salutation'] !== "x") {
+      return;
+    }
+    //
     if (information['salutation'].length === 0) {
       setInfoStatus({
         ...infoStatus,
@@ -222,7 +239,6 @@ function App() {
       firstName: information['firstName'],
       lastName: value
     }
-
     nameCheck(params);
   }
 
@@ -232,7 +248,7 @@ function App() {
       if (selectedCountry) {
         params['countryCode'] = selectedCountry['countryCode'];
         params['language'] = selectedCountry['language'];
-      } 
+      }
     }
 
     UseNameCheck(params).then((result) => {
@@ -244,6 +260,11 @@ function App() {
             salutation: 2
           })
         } else if (nameNotfound.length > 0) {
+          // update border color for last name, first name, and gender to orange. if you want to update border color of postcode file, you can run 
+          setInfoStatus({
+            ...infoStatus,
+            postCode: 2 // 0 : red, 1: orange, 2: green
+          })
           setInfoStatus({
             ...infoStatus,
             lastName: 1,
@@ -321,9 +342,9 @@ function App() {
   const emailCheck = (key, value) => {
     if (value.length === 0) {
       setInfoStatus({
-              ...infoStatus,
-              email: 0
-            })
+        ...infoStatus,
+        email: 0
+      })
       return;
     }
 
@@ -406,7 +427,7 @@ function App() {
       })
       return;
     }
-    
+
     let params = {
       country: country,
       cityName: cityName,
@@ -452,7 +473,7 @@ function App() {
                 street,
                 houseNumber
               },
-              prediction: result.predictions[0]
+              predictions: result.predictions
             })
             setDialogType("wrong");
           }
@@ -466,9 +487,9 @@ function App() {
     addressCheck({})
   }
 
-  const getClassName = (originalClass, key, label) =>{
+  const getClassName = (originalClass, key, label) => {
     let className = originalClass;
-    switch(infoStatus[key]) {
+    switch (infoStatus[key]) {
       case 0:
         className += " was-validated";
         break;
@@ -517,7 +538,7 @@ function App() {
       language: selectedCountry['language']
     };
 
-    const result = await UseCityNameAutocomplete(params); 
+    const result = await UseCityNameAutocomplete(params);
     return result;
   }
 
@@ -532,7 +553,7 @@ function App() {
       houseNumber: information['houseNumber']
     };
 
-    const result = await UseStreetAutocomplete(params); 
+    const result = await UseStreetAutocomplete(params);
     return result;
   }
 
@@ -545,6 +566,7 @@ function App() {
 
   const onPostCodeChange = (value) => {
     const selectedState = countryStates.find(state => state.shortCode === value.subdivisionCode);
+    console.log(selectedState, '=======549')
     setInformation({
       ...information,
       cityName: value.cityName,
@@ -592,11 +614,11 @@ function App() {
       ...information,
       street: selectedValue.label
     })
-    
+
   };
 
   const ModalHandler = (value) => {
-    if(value === "0") {
+    if (value === "0") {
       setInformation({
         ...information,
         postCode: dialogData['prediction'].postCode,
@@ -627,187 +649,193 @@ function App() {
   return (
     <div className="App">
       <div className="card register-card">
-            <div className="card-body">
-              <div className="card-title"> Ich bin Neukunde! </div>
-              <form className="register-form">
-                <div className="register-personal">
-                  <div className="row g-2">
-                    <div className={getClassName("form-group col-md-3 col-sm-6", "salutation", "salutation")}>
-                      <label className="form-label" htmlFor="personalSalutation">
-                        Salutation*
-                      </label>
-                      <select id="salutation" className="form-select" name="salutation" required="required" value={information['salutation']} onChange={change}>
-                        <option value="x">
-                          Keine Angabe
-                        </option>
-                        <option value="f">
-                          Frau
-                        </option>
-                        <option value="m">
-                          Herr
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-                  <div className="row g-2">
-                    <div className={getClassName("form-group col-sm-6", 'firstName', 'first_name')}>
-                      <label className="form-label" htmlFor="personalFirstName">
-                        First name*
-                      </label>
-                      <input type="text" className="form-control" id="firstName" placeholder="Enter first name..." name="firstName" data-form-validation-required-message="Vorname darf nicht leer sein." required="required" onChange={change} onBlur={blur} value={information['firstName']}/>
-                    </div>
-                    <div className={getClassName("form-group col-sm-6", 'lastName', 'last_name')}>
-                      <label className="form-label" htmlFor="personalLastName">
-                        Last name*
-                      </label>
-                      <input type="text" className="form-control" id="lastName" placeholder="Enter last name..." name="lastName" data-form-validation-required-message="Nachname darf nicht leer sein." required="required" onChange={change} onBlur={blur} value={information['lastName']}/>
-                    </div>
-                  </div>
-                  <div className="row g-2">
-                    <div className={getClassName("form-group col-sm-6", 'email', 'email')}>
-                      <label className="form-label" htmlFor="personalMail">
-                            New E-mail adress*
-                      </label>
-                      <input type="email" className="form-control" id="email" placeholder="Enter new email address..." name="email" required="required" onChange={change} onBlur={blur}/>
-                      {infoStatus['email'] === 0 ? <div className="endereco-status-wrapper">
-                        <ul className="endereco-status-wrapper-list">
-                          <li className="endereco-status-wrapper-list__item endereco-status-wrapper-list__item--email_not_correct">
-                            The email address does not appear to be correct
-                          </li>
-                          <li className="endereco-status-wrapper-list__item endereco-status-wrapper-list__item--email_syntax_error">
-                            Check the spelling
-                          </li>
-                        </ul>
-                      </div> : <></>}
-                      {infoStatus['email'] === 1 ? <div data-id="64832fe2-f0d0-46ce-ab2d-2a0fecef6b74" className="endereco-status-wrapper">
-                        <ul className="endereco-status-wrapper-list">
-                          <li className="endereco-status-wrapper-list__item endereco-status-wrapper-list__item--email_not_correct">The email address does not appear to be correct</li>
-                        </ul>
-                      </div> : <></>}
-                    </div>
-                    <div className={getClassName("form-group col-sm-6", 'password', 'password')}>
-                      <span className="js-form-field-toggle-guest-mode">
-                        <label className="form-label" htmlFor="personalPassword">
-                          Password*
-                        </label>
-                        <input type="password" className="form-control" id="password" placeholder="Enter password ..." name="password" minLength="8" data-form-validation-length-message=" Das Passwort muss mindestens 8 Zeichen lang sein." required="required" onChange={change} onBlur={blur}/>
-                        <small className={`form-text js-validation-message ${infoStatus['password'] === 0 ? 'invalid-feedback' : ""}`} data-form-validation-length-text="true">
-                          The password must be at least 8 characters long.
-                        </small>
-                      </span>
-                    </div>
-                    <div className="form-group col-sm-6">
-                    </div>
-                    <div className="form-group col-sm-6">
-                    </div>
-                  </div>
+        <div className="card-body">
+          <div className="card-title"> Ich bin Neukunde! </div>
+          <form className="register-form">
+            <div className="register-personal">
+              <div className="row g-2">
+                <div className={getClassName("form-group col-md-3 col-sm-6", "salutation", "salutation")}>
+                  <label className="form-label" htmlFor="personalSalutation">
+                    Salutation*
+                  </label>
+                  <select id="salutation" className="form-select" name="salutation" required="required" value={information['salutation']} onChange={change}>
+                    <option value="x">
+                      not selected
+                    </option>
+                    <option value="f">
+                      Female
+                    </option>
+                    <option value="m">
+                      Male
+                    </option>
+                  </select>
                 </div>
-                <div className="register-address">
-                  <div className="register-billing">
-                    <div className="card-title">
-                      Ihre Adresse
-                    </div>
-                    <div className="row g-2 country-and-state-form-elements" data-country-state-select="true">
-                      <div className={getClassName("form-group col-md-6", "country", "country_code")}>
-                        <label className="form-label" htmlFor="country">
-                          Country*
-                        </label>
-                        <select className="country-select form-select" name="country" id="country" required="required" onChange={change} defaultValue={information['country']} >
-                          {
-                            countryData.map((country)=> {
-                              return(<option value={country['countryId']} key={country['countryId']}>
-                                                      {country['countryName']}
-                                                    </option>)
-                            })
-                          }
-                        </select>
-                      </div>
-                      <div className={getClassName("form-group col-md-6", "state", "subdivision_code")}>
-                        <label className="form-label" htmlFor="state">
-                          Federal State    
-                        </label>
-
-                        <select className="country-state-select form-select" id="state" name="state" onChange={change} value={information['state']}>
-                            <option value="" data-placeholder-option="true" >
-                                Bundesland auswählen ...
-                            </option>
-                            {
-                              countryStates.map(state => {
-                                return (<option value={state.id} key={state.id}>{state.name}</option>)
-                              })
-                            }
-                        </select>
-                      </div>
-                    </div>
-                    <div className="row g-2">
-                      <div className={getClassName("form-group col-md-2 col-4", "postCode", "postal_code")}>
-                        <PostCodeAutoComplete
-                          runAutoComplete={runPostCodeAutoComplete}
-                          setDataSuggestions={setDataSuggestions}
-                          onDataChange={onPostCodeChange}
-                          countryStates={countryStates}
-                          autoUpdate={autoCompleteUpdate}
-                          updateStatus={setAutoCompleteUpdate}
-                          onDataInput={(value) => onDataInput('postCode', value)}
-                        />
-                      </div>
-                      <div className={getClassName("form-group col-md-4 col-8", "cityName", "locality")}>
-                        <CityNameAutoComplete
-                          runAutoComplete={runCityNameAutoComplete}
-                          setDataSuggestions={setDataSuggestions}
-                          onDataChange={onCityNameChange}
-                          countryStates={countryStates}
-                          autoUpdate={autoCompleteUpdate}
-                          updateStatus={setAutoCompleteUpdate}
-                          onDataInput={(value) => onDataInput('cityName', value)}
-                        />
-                      </div>
-                      <div className={getClassName("form-group col-8 col-md-4", "street", "street_name")}>
-                        <StreetAutoComplete
-                          runAutoComplete={runStreetAutoComplete}
-                          setDataSuggestions={setDataSuggestions}
-                          onDataChange={onStreetNameChange}
-                          countryStates={countryStates}
-                          autoUpdate={autoCompleteUpdate}
-                          updateStatus={setAutoCompleteUpdate}
-                          focusUpdate={focusUpdate}
-                          updateFocusStatus={setFocusUpdate}
-                          onDataInput={(value) => onDataInput('street', value)}
-                        />
-                      </div>
-                      <div className={getClassName("form-group col-4 col-md-2", "houseNumber", "additional_info")}>
-                        <label className="form-label" htmlFor="houseNumber">
-                          House number*
-                        </label>
-                        <input type="text" className="form-control" id="houseNumber" placeholder="Enter house number..." required="required" value={information['houseNumber']} onChange={change}>
-                        </input>
-                      </div>
-                    </div>
-                    <div className="row g-2">
-                    </div>
-                  </div>
+              </div>
+              <div className="row g-2">
+                <div className={getClassName("form-group col-sm-6", 'firstName', 'first_name')}>
+                  <label className="form-label" htmlFor="personalFirstName">
+                    First name*
+                  </label>
+                  <input type="text" className="form-control" id="firstName" placeholder="Enter first name..." name="firstName" data-form-validation-required-message="Vorname darf nicht leer sein." required="required" onChange={change} onBlur={blur} value={information['firstName']} />
                 </div>
-                {
-                  dialogType === 'wrong' ? <EnderecoWrongAddressModal  
-                                                  OpenStatus={dialogStatus}
-                                                  UpdateOpenStatus={setDialogStatus}
-                                                  Data={dialogData}
-                                                  Handler={ModalHandler}
-                                                /> : <EnderecoInvalidAddressModal
-                                                    OpenStatus={dialogStatus}
-                                                    UpdateOpenStatus={setDialogStatus}
-                                                    Data={dialogData}
-                                                    Handler={ModalHandler}
-                                                  />
-                }
-                <div className="register-submit d-grid col-md-6 offset-md-6">
-                  <div className="btn btn-primary btn-lg" onClick={validate}>
-                    Continue to shipping
-                  </div>
+                <div className={getClassName("form-group col-sm-6", 'lastName', 'last_name')}>
+                  <label className="form-label" htmlFor="personalLastName">
+                    Last name*
+                  </label>
+                  <input type="text" className="form-control" id="lastName" placeholder="Enter last name..." name="lastName" data-form-validation-required-message="Nachname darf nicht leer sein." required="required" onChange={change} onBlur={blur} value={information['lastName']} />
                 </div>
-              </form>
+              </div>
+              <div className="row g-2">
+                <div className={getClassName("form-group col-sm-6", 'email', 'email')}>
+                  <label className="form-label" htmlFor="personalMail">
+                    New E-mail adress*
+                  </label>
+                  <input type="email" className="form-control" id="email" placeholder="Enter new email address..." name="email" required="required" onChange={change} onBlur={blur} />
+                  {infoStatus['email'] === 0 ? <div className="endereco-status-wrapper">
+                    <ul className="endereco-status-wrapper-list">
+                      <li className="endereco-status-wrapper-list__item endereco-status-wrapper-list__item--email_not_correct">
+                        The email address does not appear to be correct
+                      </li>
+                      <li className="endereco-status-wrapper-list__item endereco-status-wrapper-list__item--email_syntax_error">
+                        Check the spelling
+                      </li>
+                    </ul>
+                  </div> : <></>}
+                  {infoStatus['email'] === 1 ? <div data-id="64832fe2-f0d0-46ce-ab2d-2a0fecef6b74" className="endereco-status-wrapper">
+                    <ul className="endereco-status-wrapper-list">
+                      <li className="endereco-status-wrapper-list__item endereco-status-wrapper-list__item--email_not_correct">The email address does not appear to be correct</li>
+                    </ul>
+                  </div> : <></>}
+                </div>
+                <div className={getClassName("form-group col-sm-6", 'password', 'password')}>
+                  <span className="js-form-field-toggle-guest-mode">
+                    <label className="form-label" htmlFor="personalPassword">
+                      Password*
+                    </label>
+                    <input type="password" className="form-control" id="password" placeholder="Enter password ..." name="password" minLength="8" data-form-validation-length-message=" Das Passwort muss mindestens 8 Zeichen lang sein." required="required" onChange={change} onBlur={blur} />
+                    <small className={`form-text js-validation-message ${infoStatus['password'] === 0 ? 'invalid-feedback' : ""}`} data-form-validation-length-text="true">
+                      The password must be at least 8 characters long.
+                    </small>
+                  </span>
+                </div>
+                <div className="form-group col-sm-6">
+                </div>
+                <div className="form-group col-sm-6">
+                </div>
+              </div>
             </div>
-          </div>
+            <div className="register-address">
+              <div className="register-billing">
+                <div className="card-title">
+                  Ihre Adresse
+                </div>
+                <div className="row g-2 country-and-state-form-elements" data-country-state-select="true">
+                  <div className={getClassName("form-group col-md-6", "country", "country_code")}>
+                    <label className="form-label" htmlFor="country">
+                      Country*
+                    </label>
+                    <select className="country-select form-select" name="country" id="country" required="required" onChange={change} defaultValue={information['country']} >
+                      {
+                        countryData.map((country) => {
+                          return (<option value={country['countryId']} key={country['countryId']}>
+                            {country['countryName']}
+                          </option>)
+                        })
+                      }
+                    </select>
+                  </div>
+                  <div className={getClassName("form-group col-md-6", "state", "subdivision_code")}>
+                    <label className="form-label" htmlFor="state">
+                      Federal State
+                    </label>
+
+                    <select className="country-state-select form-select" id="state" name="state" onChange={change} value={information['state']}>
+                      <option value="" data-placeholder-option="true" >
+                        Bundesland auswählen ...
+                      </option>
+                      {
+                        countryStates.map(state => {
+                          return (<option value={state.id} key={state.id}>{state.name}</option>)
+                        })
+                      }
+                    </select>
+                  </div>
+                </div>
+                <div className="row g-2">
+                  <div className={getClassName("form-group col-md-2 col-4", "postCode", "postal_code")}>
+                    <PostCodeAutoComplete
+                      runAutoComplete={runPostCodeAutoComplete}
+                      setDataSuggestions={setDataSuggestions}
+                      onDataChange={onPostCodeChange}
+                      countryStates={countryStates}
+                      autoUpdate={autoCompleteUpdate}
+                      updateStatus={setAutoCompleteUpdate}
+                      focused={focused}
+                      setFocused={setFocused}
+                      onDataInput={(value) => onDataInput('postCode', value)}
+                    />
+                  </div>
+                  <div className={getClassName("form-group col-md-4 col-8", "cityName", "locality")}>
+                    <CityNameAutoComplete
+                      runAutoComplete={runCityNameAutoComplete}
+                      setDataSuggestions={setDataSuggestions}
+                      onDataChange={onCityNameChange}
+                      countryStates={countryStates}
+                      autoUpdate={autoCompleteUpdate}
+                      updateStatus={setAutoCompleteUpdate}
+                      focused={focused}
+                      setFocused={setFocused}
+                      onDataInput={(value) => onDataInput('cityName', value)}
+                    />
+                  </div>
+                  <div className={getClassName("form-group col-8 col-md-4", "street", "street_name")}>
+                    <StreetAutoComplete
+                      runAutoComplete={runStreetAutoComplete}
+                      setDataSuggestions={setDataSuggestions}
+                      onDataChange={onStreetNameChange}
+                      countryStates={countryStates}
+                      autoUpdate={autoCompleteUpdate}
+                      updateStatus={setAutoCompleteUpdate}
+                      focusUpdate={focusUpdate}
+                      updateFocusStatus={setFocusUpdate}
+                      focused={focused}
+                      setFocused={setFocused}
+                      onDataInput={(value) => onDataInput('street', value)}
+                    />
+                  </div>
+                  <div className={getClassName("form-group col-4 col-md-2", "houseNumber", "additional_info")}>
+                    <label className="form-label" htmlFor="houseNumber">
+                      House number*
+                    </label>
+                    <input type="text" className="form-control" id="houseNumber" placeholder="Enter house number..." required="required" value={information['houseNumber']} onChange={change}>
+                    </input>
+                  </div>
+                </div>
+                <div className="row g-2">
+                </div>
+              </div>
+            </div>
+            {
+              dialogType === 'wrong' ? <EnderecoWrongAddressModal
+                OpenStatus={dialogStatus}
+                UpdateOpenStatus={setDialogStatus}
+                Data={dialogData}
+                Handler={ModalHandler}
+              /> : <EnderecoInvalidAddressModal
+                OpenStatus={dialogStatus}
+                UpdateOpenStatus={setDialogStatus}
+                Data={dialogData}
+                Handler={ModalHandler}
+              />
+            }
+            <div className="register-submit d-grid col-md-6 offset-md-6">
+              <div className="btn btn-primary btn-lg" onClick={validate}>
+                Continue to shipping
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }

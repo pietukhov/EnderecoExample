@@ -37,13 +37,16 @@ export default function EnderecoModal({OpenStatus, UpdateOpenStatus, Data, Handl
           </div>
           <div className="endereco-modal__errors">
             <ul>
-              {
+              {/* {
                 Data.status.map((s, id) => {
                   return (<li key={id}>
                     {s.split('_').map(st => st.charAt(0).toUpperCase() + st.slice(1)).join(' ')}
                   </li>)
                 })
-              }
+              } */}
+              <li>
+                This house number could not be found.
+              </li>
             </ul>
           </div>
           <div className="endereco-modal__address-container">
@@ -65,7 +68,7 @@ export default function EnderecoModal({OpenStatus, UpdateOpenStatus, Data, Handl
             </span>
           </div>
           <div className="endereco-modal__warning" endereco-show-if-origin="">
-            Wrong addresses can lead to delivery problems and cause additional costs.
+            Incorrect addresses can lead to problems in delivery and cause further costs.
           </div>
         </div>
         <div className="endereco-modal__footer">
