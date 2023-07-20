@@ -10,7 +10,7 @@ const KEY_CODES = {
 }
 
 function useAutoComplete({ delay = 500, source, onChange, onInput }) {
-
+    
     const [myTimeout, setMyTimeOut] = useState(setTimeout(() => { }, 0))
     const listRef = useRef()
     const [suggestions, setSuggestions] = useState([]);
@@ -61,7 +61,7 @@ function useAutoComplete({ delay = 500, source, onChange, onInput }) {
         //     setBusy(true)
         //     clearSuggestionsWithData([]);
         //     setPreSuggestions([]);
-
+            
         //     delayInvoke(() => {
         //         getSuggestions(searchTerm)
         //         setBusy(false)
@@ -143,26 +143,24 @@ function useAutoComplete({ delay = 500, source, onChange, onInput }) {
     }
 }
 
-export default function CityNameAutoComplete({ runAutoComplete, setDataSuggestions, onDataChange, onDataInput, countryStates,
-    autoUpdate, updateStatus, focused, setFocused }) {
-
-    const { bindInput, bindOptions, bindOption, isBusy, suggestions, selectedIndex, updateInput, closeList } = useAutoComplete({
+export default function CityNameAutoComplete({runAutoComplete, setDataSuggestions, onDataChange, onDataInput, countryStates, autoUpdate, updateStatus, focused, setFocused}) {
+    const { bindInput, bindOptions,  bindOption, isBusy, suggestions, selectedIndex, updateInput, closeList} = useAutoComplete({
         onInput: value => onDataInput(value),
         onChange: value => onDataChange(value),
         source: async (search) => {
-            try {
-                const res = await runAutoComplete(search);
-                const data = await res.predictions
-                console.log(res)
-                setDataSuggestions({
-                    cityName: data
-                })
-                return data;
-            } catch (e) {
-                console.log(e)
+          try {
+               const res = await runAutoComplete(search);
+               const data = await res.predictions
+               console.log(res)
+               setDataSuggestions({
+                cityName: data
+               })
+               return data;
+          } catch (e) {
+              console.log(e)
                 return []
-            }
-        }
+          }
+     }
     })
 
     useEffect(() => {
@@ -177,42 +175,42 @@ export default function CityNameAutoComplete({ runAutoComplete, setDataSuggestio
     })
 
     return (<div>
-        <label className="form-label" htmlFor="cityName">{"City*"}</label>
-            <input
-                placeholder='Enter city...'
-                className="form-control"
-                onFocus={() => setFocused('cityName')}
-                {...bindInput}
-            />
-            {isBusy && <div className="w-4 h-4 border-2 border-dashed rounded-full border-slate-500 animate-spin"></div>}
-            {focused == 'cityName' && <ul {...bindOptions} className="scroll-smooth absolute overflow-x-hidden overflow-y-auto">
-                {
-                    suggestions.map((suggestion, index) => (
-                        <li
-                            className={`flex items-center h-[40px] p-1` + (selectedIndex === index && "bg-slate-300")}
-                            key={index}
-                            {...bindOption}
-                        >
-                            <div className="flex items-center space-x-1">
-                                <a href="#">
-                                    <span className="normal">
-                                        {suggestion.postCode + ", "}
-                                    </span>
-                                    <span className="highlight">
-                                        {suggestion.cityName.substring(0, bindInput.value.length)}
-                                    </span>
-                                    <span className="normal">
-                                        {suggestion.cityName.substring(bindInput.value.length, suggestion.cityName.length)}
-                                    </span>
-                                    <span>
-                                        , {countryStates.find(state => state.shortCode === suggestion.subdivisionCode).name}
-                                    </span>
-                                </a>
-                            </div>
-                        </li>
-                    ))
-                }
-            </ul>}
-    </div>
-    )
+            <label className="form-label" htmlFor="cityName">{"City*"}</label>
+                        <input
+                            placeholder='Enter city...'
+                            className="form-control"
+                            onFocus={() => setFocused('cityName')}
+                            {...bindInput}
+                        />
+                        {isBusy && <div className="w-4 h-4 border-2 border-dashed rounded-full border-slate-500 animate-spin"></div>}
+                        {focused == 'cityName' && <ul {...bindOptions} className="scroll-smooth absolute overflow-x-hidden overflow-y-auto">
+                            {
+                                suggestions.map((suggestion, index) => (
+                                    <li
+                                        className={`flex items-center h-[40px] p-1` + (selectedIndex === index && "bg-slate-300")}
+                                        key={index}
+                                        {...bindOption}
+                                    >
+                                        <div className="flex items-center space-x-1">
+                                            <a href="#">
+                                                <span className="normal">
+                                                    {suggestion.postCode + ", "}
+                                                </span>
+                                                <span className="highlight">
+                                                    {suggestion.cityName.substring(0, bindInput.value.length)}
+                                                </span>
+                                                <span className="normal">
+                                                    {suggestion.cityName.substring(bindInput.value.length, suggestion.cityName.length)}
+                                                </span>
+                                                <span>
+                                                    , {countryStates.find(state => state.shortCode === suggestion.subdivisionCode).name}
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </li>
+                                ))
+                            }
+                        </ul>}
+        </div>
+        )
 }

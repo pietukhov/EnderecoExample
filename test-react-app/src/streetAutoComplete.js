@@ -1,26 +1,23 @@
 import { useEffect, useRef } from 'react'
 import useAutoComplete from './use-autocomplete';
-import { useState } from 'react'
 
-export default function StreetAutoComplete({ runAutoComplete, setDataSuggestions, onDataChange,
-    onDataInput, autoUpdate, updateStatus, focusUpdate, updateFocusStatus, focused, setFocused }) {
-    
-    const { bindInput, bindOptions, bindOption, isBusy, suggestions, selectedIndex, updateInput, closeList } = useAutoComplete({
+export default function StreetAutoComplete({runAutoComplete, setDataSuggestions, onDataChange, onDataInput, autoUpdate, updateStatus, focusUpdate, updateFocusStatus, focused, setFocused}) {
+    const { bindInput, bindOptions,  bindOption, isBusy, suggestions, selectedIndex, updateInput, closeList} = useAutoComplete({
         onInput: value => onDataInput(value),
         onChange: value => onDataChange(value),
         source: async (search) => {
-            try {
-                const res = await runAutoComplete(search);
-                const data = await res.predictions
-                setDataSuggestions({
-                    street: data
-                })
-                return data.map((d, index) => ({ value: index, label: d.street }))
-            } catch (e) {
-                console.log(e)
+          try {
+               const res = await runAutoComplete(search);
+               const data = await res.predictions
+               setDataSuggestions({
+                street: data
+               })
+               return data.map((d, index) => ({ value: index, label: d.street }))
+          } catch (e) {
+              console.log(e)
                 return []
-            }
-        }
+          }
+     }
     })
 
     const inputRef = useRef();
@@ -44,18 +41,16 @@ export default function StreetAutoComplete({ runAutoComplete, setDataSuggestions
     })
 
     return (<div>
-        <label className="form-label" htmlFor="street">{"Street*"}</label>
-    
-            <input
-                ref={inputRef}
-                placeholder='Enter street...'
-                className="form-control"
-                onFocus={() => setFocused('street')}
-                {...bindInput}
-            />
-            {isBusy && <div className="w-4 h-4 border-2 border-dashed rounded-full border-slate-500 animate-spin"></div>}
-
-            {focused == 'street' && <ul {...bindOptions} className="w-[300px] scroll-smooth absolute max-h-[260px] overflow-x-hidden overflow-y-auto" >
+            <label className="form-label" htmlFor="street">{"Street*"}</label>
+                        <input
+                            ref={inputRef}
+                            placeholder='Enter street...'
+                            className="form-control"
+                            onFocus={() => setFocused('street')}
+                            {...bindInput}
+                        />
+                        {isBusy && <div className="w-4 h-4 border-2 border-dashed rounded-full border-slate-500 animate-spin"></div>}
+                        {focused == 'street' && <ul {...bindOptions} className="w-[300px] scroll-smooth absolute max-h-[260px] overflow-x-hidden overflow-y-auto" >
                 {
                     suggestions.map((suggestion, index) => (
                         <li
@@ -77,6 +72,6 @@ export default function StreetAutoComplete({ runAutoComplete, setDataSuggestions
                     ))
                 }
             </ul>}
-    </div>
-    )
+        </div>
+        )
 }

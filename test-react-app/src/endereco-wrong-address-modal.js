@@ -4,7 +4,6 @@ import EnderecoRadioButton from './endereco-radio'
 export default function EnderecoWrongAddressModal({OpenStatus, UpdateOpenStatus, Data, Handler}) {
   const [checkStatus, setCheckStatus] = useState("0");
   const onCheck = (value) => {
-    console.log(value);
     setCheckStatus(value)
   }
 
@@ -13,7 +12,7 @@ export default function EnderecoWrongAddressModal({OpenStatus, UpdateOpenStatus,
     UpdateOpenStatus(false);
   }
 
-  if (!Data || Object.keys(Data).length == 0 || !Data.prediction)
+  if (!Data || Object.keys(Data).length == 0 || !Data.predictions)
     return (<></>)
   return (
     <div className={`endereco-popup-container endereco-popup-container--direction-ltr ${!OpenStatus ? "hidden" : ""}`}>
@@ -37,7 +36,10 @@ export default function EnderecoWrongAddressModal({OpenStatus, UpdateOpenStatus,
               <EnderecoRadioButton 
                 name="0"
                 value="0"
-                data={Data}
+                data={{
+                  original: Data.original,
+                  prediction: Data.predictions
+                }}
                 onCheck={onCheck}
                 checkStatus={checkStatus}
               />

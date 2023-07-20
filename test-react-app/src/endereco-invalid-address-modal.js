@@ -12,6 +12,11 @@ export default function EnderecoModal({OpenStatus, UpdateOpenStatus, Data, Handl
 
   if (!Data || Object.keys(Data).length == 0 || !Data.status)
     return (<></>)
+
+  const buildingNumberNotFound = Data.status.filter(s => s === 'building_number_major_correction')
+  const addressNotFound = Data.status.filter(s => s=== 'address_not_found');
+  const streetNotFound = Data.status.filter(s => s=== 'street_name_major_correction');
+  
   return (
     <div className={`endereco-popup-container endereco-popup-container--direction-ltr ${!OpenStatus ? "hidden" : ""}`}>
       <div className={`endereco-modal endereco-modal--no-prediction ${Data.status.join(" ")}`}>
@@ -37,16 +42,15 @@ export default function EnderecoModal({OpenStatus, UpdateOpenStatus, Data, Handl
           </div>
           <div className="endereco-modal__errors">
             <ul>
-              {/* {
-                Data.status.map((s, id) => {
-                  return (<li key={id}>
-                    {s.split('_').map(st => st.charAt(0).toUpperCase() + st.slice(1)).join(' ')}
-                  </li>)
-                })
-              } */}
-              <li>
+              {buildingNumberNotFound.length > 0 ? <li>
                 This house number could not be found.
-              </li>
+              </li> : <></> }
+              {streetNotFound.length > 0 ? <li>
+                This Street could not be found.
+              </li> : <></> }
+              {addressNotFound.length > 0 ? <li>
+                This address is incorrect.
+              </li> : <></> }
             </ul>
           </div>
           <div className="endereco-modal__address-container">
