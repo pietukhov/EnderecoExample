@@ -33,16 +33,19 @@ export default function EnderecoWrongAddressModal({OpenStatus, UpdateOpenStatus,
             </span>
           </div>
           <ul className="endereco-address-predictions endereco-address-predictions--suggestions">
-              <EnderecoRadioButton 
+              {
+                Data.predictions.map((p, id) => <EnderecoRadioButton 
                 name="0"
                 value="0"
+                key={id}
                 data={{
                   original: Data.original,
-                  prediction: Data.predictions
+                  prediction: p
                 }}
                 onCheck={onCheck}
                 checkStatus={checkStatus}
-              />
+              />)
+              }
           </ul>
           <div className="endereco-modal__divider">
             <span className="endereco-modal__divider-innertext">
@@ -58,7 +61,10 @@ export default function EnderecoWrongAddressModal({OpenStatus, UpdateOpenStatus,
               <EnderecoRadioButton 
                 name="original"
                 value="-1"
-                data={Data}
+                data={{
+                  original: Data.original,
+                  prediction: Data.predictions[0]
+                }}
                 onCheck={onCheck}
                 checkStatus={checkStatus}
               />

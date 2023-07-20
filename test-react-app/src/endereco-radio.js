@@ -9,17 +9,17 @@ const EnderecoRadioButton = ({name, value, data, onCheck, checkStatus}) => {
   		if (originalData.street.toLowerCase() === predirectionData.street.toLowerCase()) {
   			return (
   					<span className="endereco-span--neutral">
-				        { originalData.street }
+				        { originalData.street + ' '}
 			      	</span>
   				)
   		} else {
   			return (
   				<>
 					<span className="endereco-span--remove">
-				        { originalData.street }
+				        { originalData.street + ' ' }
 			      	</span>
 			      	<span className="endereco-span--add">
-				        { predirectionData.street }
+				        { predirectionData.street + ' ' }
 			      	</span>
 		      	</>
 			)
@@ -29,7 +29,7 @@ const EnderecoRadioButton = ({name, value, data, onCheck, checkStatus}) => {
   	const displayHouseNumber = () => {
   		const originalData = data.original;
   		const predirectionData = data.prediction;
-  		if (originalData.houseNumber === predirectionData.houseNumber) {
+  		if (originalData.houseNumber.toLowerCase() === predirectionData.houseNumber.toLowerCase()) {
   			return (
   					<span className="endereco-span--neutral">
 				        { originalData.houseNumber }
@@ -55,17 +55,17 @@ const EnderecoRadioButton = ({name, value, data, onCheck, checkStatus}) => {
   		if (originalData.postCode === predirectionData.postCode) {
   			return (
   					<span className="endereco-span--neutral">
-				        { originalData.postCode }
+				        { originalData.postCode + " " }
 			      	</span>
   				)
   		} else {
   			return (
   				<>
 					<span className="endereco-span--remove">
-				        { originalData.postCode }
+				        { originalData.postCode + " " }
 			      	</span>
 			      	<span className="endereco-span--add">
-				        { predirectionData.postCode }
+				        { predirectionData.postCode + " " }
 			      	</span>
 		      	</>
 			)
@@ -75,7 +75,7 @@ const EnderecoRadioButton = ({name, value, data, onCheck, checkStatus}) => {
   	const displayCityName = () => {
   		const originalData = data.original;
   		const predirectionData = data.prediction;
-  		if (originalData.cityName === predirectionData.cityName) {
+  		if (originalData.cityName.toLowerCase() === predirectionData.cityName.toLowerCase()) {
   			return (
   					<span className="endereco-span--neutral">
 				        { originalData.cityName }

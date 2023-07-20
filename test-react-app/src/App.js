@@ -423,6 +423,8 @@ function App() {
       })
       return;
     }
+
+    const selectedState = countryStates.find(state => state.id === information['state']);
     
     let params = {
       country: country,
@@ -462,16 +464,19 @@ function App() {
             })
             setDialogType("incorrect");
           } else {
-            setDialogData({
-              original: {
-                postCode,
-                cityName,
-                street,
-                houseNumber
-              },
-              prediction: result.predictions[0]
-            })
-            setDialogType("wrong");
+            const missingData = result.status.filter(s => s.includes('major_correction') || s.includes('minor_correction'));
+            if (missingData.length > 0) {
+              setDialogData({
+                original: {
+                  postCode,
+                  cityName,
+                  street,
+                  houseNumber
+                },
+                predictions: result.predictions
+              })
+              setDialogType("wrong");
+            }
           }
           setDialogStatus(true);
         }
@@ -626,7 +631,7 @@ function App() {
         ...autoCompleteUpdate,
         postCode: dialogData['prediction'].postCode,
         cityName: dialogData['prediction'].cityName,
-        street: dialogData['prediction'].cityName
+        street: dialogData['prediction'].street
       })
     }
 
