@@ -271,18 +271,18 @@ function App() {
           let lastNameInfoStatus = -1;
           let lastNameUpdateStatus = true;
           if (needsCorrection.length > 0) {
-            const salutationNeedsCorrection = needsCorrection.filter((status) => status.includes('salutation'));
-            if (salutationNeedsCorrection) {
-              if (updateStatus['salutation']) {
-                salutationInfoStatus = 1;
-              } else {
-                if (salutation === 'x')
-                  salutation = result.predictions[0].salutation;
+            if (result.predictions.length > 0) {
+              if (information['salutation'] === result.predictions[0].salutation || information['salutation'] === 'x') {
+                salutation = result.predictions[0].salutation;
                 salutationInfoStatus = 2;
-                salutationUpdateStatus = true;
+                salutation = result.predictions[0].salutation;
+              }
+
+              if (information['salutation'] !== result.predictions[0].salutation && information['salutation'] !== 'x') {
+                salutationInfoStatus = 1;
               }
             }
-
+            
             const lastNameNeedsCorrection = needsCorrection.filter((status) => status.includes('last_name'));
             if (lastNameNeedsCorrection) {
               if (!updateStatus['lastName']) {
@@ -322,6 +322,13 @@ function App() {
               salutation: salutationInfoStatus,
             })
 
+          } else {
+            setUpdateStatus({
+              ...updateStatus,
+              firstName: 2,
+              lastName: 2,
+              salutation: 2
+            })
           }
         }
       }
@@ -646,7 +653,7 @@ function App() {
                       <label className="form-label" htmlFor="personalSalutation">
                         Salutation*
                       </label>
-                      <select id="salutation" className="form-select" name="salutation" required="required" value={information['salutation']} onChange={change}>
+                      <select id="salutation" className="form-select" name="salutation" required="required" value={information['salutation']} onChange={change} onFocus={() => setFocused('salutation')}>
                         <option value="x">
                           Keine Angabe
                         </option>
@@ -664,13 +671,13 @@ function App() {
                       <label className="form-label" htmlFor="personalFirstName">
                         First name*
                       </label>
-                      <input type="text" className="form-control" id="firstName" placeholder="Enter first name..." name="firstName" data-form-validation-required-message="Vorname darf nicht leer sein." required="required" onChange={change} onBlur={blur} value={information['firstName']}/>
+                      <input type="text" className="form-control" id="firstName" placeholder="Enter first name..." name="firstName" data-form-validation-required-message="Vorname darf nicht leer sein." required="required" onChange={change} onBlur={blur} value={information['firstName']} onFocus={() => setFocused('firstName')} />
                     </div>
                     <div className={getClassName("form-group col-sm-6", 'lastName', 'last_name')}>
                       <label className="form-label" htmlFor="personalLastName">
                         Last name*
                       </label>
-                      <input type="text" className="form-control" id="lastName" placeholder="Enter last name..." name="lastName" data-form-validation-required-message="Nachname darf nicht leer sein." required="required" onChange={change} onBlur={blur} value={information['lastName']}/>
+                      <input type="text" className="form-control" id="lastName" placeholder="Enter last name..." name="lastName" data-form-validation-required-message="Nachname darf nicht leer sein." required="required" onChange={change} onBlur={blur} value={information['lastName']} onFocus={() => setFocused('lastName')}/>
                     </div>
                   </div>
                   <div className="row g-2">
@@ -678,7 +685,7 @@ function App() {
                       <label className="form-label" htmlFor="personalMail">
                             New E-mail adress*
                       </label>
-                      <input type="email" className="form-control" id="email" placeholder="Enter new email address..." name="email" required="required" onChange={change} onBlur={blur}/>
+                      <input type="email" onFocus={() => setFocused('email')} className="form-control" id="email" placeholder="Enter new email address..." name="email" required="required" onChange={change} onBlur={blur}/>
                       {infoStatus['email'] === 0 ? <div className="endereco-status-wrapper">
                         <ul className="endereco-status-wrapper-list">
                           <li className="endereco-status-wrapper-list__item endereco-status-wrapper-list__item--email_not_correct">
@@ -700,7 +707,7 @@ function App() {
                         <label className="form-label" htmlFor="personalPassword">
                           Password*
                         </label>
-                        <input type="password" className="form-control" id="password" placeholder="Enter password ..." name="password" minLength="8" data-form-validation-length-message=" Das Passwort muss mindestens 8 Zeichen lang sein." required="required" onChange={change} onBlur={blur}/>
+                        <input type="password" onFocus={() => setFocused('password')} className="form-control" id="password" placeholder="Enter password ..." name="password" minLength="8" data-form-validation-length-message=" Das Passwort muss mindestens 8 Zeichen lang sein." required="required" onChange={change} onBlur={blur}/>
                         <small className={`form-text js-validation-message ${infoStatus['password'] === 0 ? 'invalid-feedback' : ""}`} data-form-validation-length-text="true">
                           The password must be at least 8 characters long.
                         </small>
@@ -722,7 +729,7 @@ function App() {
                         <label className="form-label" htmlFor="country">
                           Country*
                         </label>
-                        <select className="country-select form-select" name="country" id="country" required="required" onChange={change} defaultValue={information['country']} >
+                        <select className="country-select form-select" onFocus={() => setFocused('country')} name="country" id="country" required="required" onChange={change} defaultValue={information['country']} >
                           {
                             countryData.map((country)=> {
                               return(<option value={country['countryId']} key={country['countryId']}>
@@ -737,7 +744,7 @@ function App() {
                           Federal State    
                         </label>
 
-                        <select className="country-state-select form-select" id="state" name="state" onChange={change} value={information['state']}>
+                        <select className="country-state-select form-select" onFocus={() => setFocused('state')} id="state" name="state" onChange={change} value={information['state']}>
                             <option value="" data-placeholder-option="true" >
                                 Bundesland auswählen ...
                             </option>
@@ -795,7 +802,7 @@ function App() {
                         <label className="form-label" htmlFor="houseNumber">
                           House number*
                         </label>
-                        <input type="text" className="form-control" id="houseNumber" placeholder="Enter house number..." required="required" value={information['houseNumber']} onChange={change}>
+                        <input type="text" className="form-control" id="houseNumber" onFocus={() => setFocused('houseNumber')} placeholder="Enter house number..." required="required" value={information['houseNumber']} onChange={change}>
                         </input>
                       </div>
                     </div>
