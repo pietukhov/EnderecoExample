@@ -621,17 +621,17 @@ function App() {
     if(value === "0") {
       setInformation({
         ...information,
-        postCode: dialogData['prediction'].postCode,
-        cityName: dialogData['prediction'].cityName,
-        houseNumber: dialogData['prediction'].houseNumber,
-        street: dialogData['prediction'].street
+        postCode: dialogData['predictions'][0].postCode,
+        cityName: dialogData['predictions'][0].cityName,
+        houseNumber: dialogData['predictions'][0].houseNumber,
+        street: dialogData['predictions'][0].street
       })
 
       setAutoCompleteUpdate({
         ...autoCompleteUpdate,
-        postCode: dialogData['prediction'].postCode,
-        cityName: dialogData['prediction'].cityName,
-        street: dialogData['prediction'].street
+        postCode: dialogData['predictions'][0].postCode,
+        cityName: dialogData['predictions'][0].cityName,
+        street: dialogData['predictions'][0].street
       })
     }
 

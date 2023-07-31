@@ -97,7 +97,7 @@ const EnderecoRadioButton = ({name, value, data, onCheck, checkStatus}) => {
 
 	return (
 	    <li className="endereco-address-predictions__item">
-		    <input className="endereco-address-predictions__radio" type="radio" name="endereco-address-predictions" value={value} id={`endereco-address-predictions__item_` + name} onChange={onChange} checked={checkStatus === name} />
+		    <input className="endereco-address-predictions__radio" type="radio" name="endereco-address-predictions" value={ value + "" } id={`endereco-address-predictions__item_` + name} onChange={onChange} checked={checkStatus === name + ""} />
 		    <label className="endereco-address-predictions__label" htmlFor={`endereco-address-predictions__item_` + name}>
 		      {displayStreet()}
 		      {displayHouseNumber()}

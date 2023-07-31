@@ -35,8 +35,8 @@ export default function EnderecoWrongAddressModal({OpenStatus, UpdateOpenStatus,
           <ul className="endereco-address-predictions endereco-address-predictions--suggestions">
               {
                 Data.predictions.map((p, id) => <EnderecoRadioButton 
-                name="0"
-                value="0"
+                name={id}
+                value={id}
                 key={id}
                 data={{
                   original: Data.original,
@@ -70,7 +70,7 @@ export default function EnderecoWrongAddressModal({OpenStatus, UpdateOpenStatus,
               />
             </ul>
           {
-          checkStatus != "0" &&
+          checkStatus == "original" &&
           <div className="endereco-modal__warning" endereco-show-if-origin="">
             Wrong addresses can lead to delivery problems and cause additional costs.
           </div>
